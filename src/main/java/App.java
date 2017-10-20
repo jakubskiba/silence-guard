@@ -5,12 +5,15 @@ public class App {
     static Integer thresholdValue = 200;
     static Integer beeperDuration = 5000;
     static boolean stopCapture = false;
-
+    static Thread mainThread;
     public static void main(String[] args) {
+        mainThread = Thread.currentThread();
         Logger.createLogger().info("System started");
 
         CommandLine commandLine = new CommandLine();
         SilenceGuard silenceGuard = new SilenceGuard();
+        System.out.println("Welcome to silence guard");
+        System.out.println(CommandLine.help_msg);
 
         silenceGuard.start();
         commandLine.start();

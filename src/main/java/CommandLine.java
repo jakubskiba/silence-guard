@@ -3,9 +3,16 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 class CommandLine extends Thread {
+    static String help_msg = "command | description\n" +
+            "?       | shows this help\n" +
+            "l       | show log\n" +
+            "x       | exits program" +
+            "t       | sets threshold value\n";
+
     public void run() {
         Scanner in = new Scanner(System.in);
         while(!App.stopCapture) {
+            System.out.print("> ");
             String command = in.nextLine();
             String[] splitted = command.split(" ");
             switch (splitted[0]) {
@@ -25,9 +32,12 @@ class CommandLine extends Thread {
                     break;
 
                 case "x":
-                    Logger.createLogger().info("System halted");
-                    Logger.createLogger().saveLogger();
-                    App.stopCapture = true;
+                    exit();
+                    break;
+
+                case "?":
+                case "help":
+                    System.out.println(help_msg);
                     break;
 
                 default:
@@ -46,5 +56,13 @@ class CommandLine extends Thread {
 
     public void showLogger() {
         Logger.createLogger().getAll().forEach(System.out::println);
+    }
+
+    public void exit() {
+        Logger.createLogger().info("System halted");
+        Logger.createLogger().saveLogger();
+        showLogger();
+        App.stopCapture = true;
+        App.mainThread.interrupt();
     }
 }
