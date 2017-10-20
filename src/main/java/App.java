@@ -11,6 +11,7 @@ public class App {
         CommandLine commandLine = new CommandLine();
         SilenceGuard silenceGuard = new SilenceGuard();
         System.out.println("Welcome to silence guard");
+        System.out.println(String.format("threshold value: %d%n", thresholdValue));
         System.out.println(CommandLine.help_msg);
 
         silenceGuard.start();
