@@ -97,7 +97,7 @@ public class Logger {
 
     public void saveLogger() {
         try {
-            String filename = String.format("%s.log", new Date().toString());
+            String filename = String.format("log/%s.log", new Date().toString());
             PrintWriter writer = new PrintWriter(filename, "UTF-8");
             this.getAll().forEach(writer::println);
             writer.close();
