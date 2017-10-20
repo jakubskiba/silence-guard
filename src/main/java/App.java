@@ -1,5 +1,3 @@
-import java.text.ParseException;
-
 public class App {
 
     static Integer thresholdValue = 200;
