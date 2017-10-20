@@ -23,6 +23,7 @@ hs_err_pid*
 
 .idea/*
 *.iml
+*.db
 .classpath
 .settings/
 target/*
@@ -31,3 +32,4 @@ data/*
 .project
 sources.txt
 
+*.jpeg
