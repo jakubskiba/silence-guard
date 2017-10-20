@@ -6,7 +6,7 @@ class CommandLine extends Thread {
     static String help_msg = "command | description\n" +
             "?       | shows this help\n" +
             "l       | show log\n" +
-            "x       | exits program" +
+            "x       | exits program\n" +
             "t       | sets threshold value\n";
 
     public void run() {
