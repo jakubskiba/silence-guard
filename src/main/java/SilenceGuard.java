@@ -1,12 +1,16 @@
 import javax.sound.sampled.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 class SilenceGuard extends Thread {
     ByteArrayOutputStream byteArrayOutputStream;
     TargetDataLine targetDataLine;
     int cnt;
-    Integer delta;
+    Integer previousMeasurement = 0;
+
 
     byte tempBuffer[] = new byte[8000];
     int countzero, countdownTimer;
@@ -20,6 +24,10 @@ class SilenceGuard extends Thread {
 
             while (!App.stopCapture) {
                 Integer silenceAmount = this.measureSound();
+                Integer delta = previousMeasurement - silenceAmount;
+                if(Math.abs(delta) > 200) new Measurement(silenceAmount, new Date());
+                previousMeasurement = silenceAmount;
+
                 if (silenceAmount <= App.thresholdValue) {
                     String logMessage = String.format("Exceeded noise level. Silence amount: %d. Threshold: %d", silenceAmount, App.thresholdValue);
                     Logger.createLogger().info(logMessage);

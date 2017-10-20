@@ -1,13 +1,18 @@
+import java.sql.Connection;
+
 public class App {
 
     static Integer thresholdValue = 200;
     static Integer beeperDuration = 5000;
+    static Integer saveDataInterval = 300000;
     static boolean stopCapture = false;
     static boolean isBeeperOn = false;
     static Thread mainThread;
     public static void main(String[] args) {
         mainThread = Thread.currentThread();
         Logger.createLogger().info("System started");
+
+        Connection connection = DBConnection.getConnection("measurements.db");
 
         CommandLine commandLine = new CommandLine();
         SilenceGuard silenceGuard = new SilenceGuard();
@@ -21,11 +26,15 @@ public class App {
         while(!App.stopCapture) {
             try {
                 Logger.createLogger().saveLogger();
-                Thread.sleep(300000);
+                new MeasurementDAO(connection).save();
+                Measurement.clear();
+                Thread.sleep(saveDataInterval);
             } catch (InterruptedException e) {
                 Logger.createLogger().error(e.toString());
             }
         }
+
+        DBConnection.closeConnection();
     }
 
     public static void printProgramStatus() {
@@ -33,4 +42,6 @@ public class App {
         String beeperStatus = isBeeperOn ? "on" : "off";
         System.out.println("Beeper: " + beeperStatus);
     }
+
+
 }
