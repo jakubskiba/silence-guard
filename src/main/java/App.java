@@ -3,6 +3,7 @@ public class App {
     static Integer thresholdValue = 200;
     static Integer beeperDuration = 5000;
     static boolean stopCapture = false;
+    static boolean isBeeperOn = false;
     static Thread mainThread;
     public static void main(String[] args) {
         mainThread = Thread.currentThread();
@@ -11,7 +12,7 @@ public class App {
         CommandLine commandLine = new CommandLine();
         SilenceGuard silenceGuard = new SilenceGuard();
         System.out.println("Welcome to silence guard");
-        System.out.println(String.format("threshold value: %d%n", thresholdValue));
+        App.printProgramStatus();
         System.out.println(CommandLine.help_msg);
 
         silenceGuard.start();
@@ -27,4 +28,9 @@ public class App {
         }
     }
 
+    public static void printProgramStatus() {
+        System.out.println(String.format("threshold value: %d", thresholdValue));
+        String beeperStatus = isBeeperOn ? "on" : "off";
+        System.out.println("Beeper: " + beeperStatus);
+    }
 }

@@ -39,6 +39,12 @@ class CommandLine extends Thread {
                     System.out.println(help_msg);
                     break;
 
+                case "b":
+                    App.isBeeperOn = App.isBeeperOn ? false : true;
+                    Logger.createLogger().info("Beeper toggled");
+                    App.printProgramStatus();
+                    break;
+
                 default:
                     System.out.println("Wrong command!");
                     break;
@@ -48,7 +54,7 @@ class CommandLine extends Thread {
 
     public void changeThreshold(Integer newValue) {
         App.thresholdValue = newValue;
-        System.out.println("Threshold set to: " + newValue);
+        App.printProgramStatus();
         String logMessage = String.format("Threshold was changed to: %d", newValue);
         Logger.createLogger().info(logMessage);
     }

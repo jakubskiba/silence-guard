@@ -6,6 +6,7 @@ class SilenceGuard extends Thread {
     ByteArrayOutputStream byteArrayOutputStream;
     TargetDataLine targetDataLine;
     int cnt;
+    Integer delta;
 
     byte tempBuffer[] = new byte[8000];
     int countzero, countdownTimer;
@@ -22,7 +23,7 @@ class SilenceGuard extends Thread {
                 if (silenceAmount <= App.thresholdValue) {
                     String logMessage = String.format("Exceeded noise level. Silence amount: %d. Threshold: %d", silenceAmount, App.thresholdValue);
                     Logger.createLogger().info(logMessage);
-                    this.playSilencingSound("beep.wav");
+                    if(App.isBeeperOn) this.playSilencingSound("beep.wav");
                 }
 
             }
