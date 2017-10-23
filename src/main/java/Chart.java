@@ -32,9 +32,9 @@ public class Chart {
         collection.addSeries(max);
 
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "Silence level",   // chart title
+                "db Level",   // chart title
                 "Measurement",
-                "Level",
+                "db",
                 collection,
                 PlotOrientation.VERTICAL,
                 false,             // include legend
