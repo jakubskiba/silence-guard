@@ -2,9 +2,9 @@ import java.sql.Connection;
 
 public class App {
 
-    static Integer thresholdValue = 200;
+    static Integer thresholdValue = 80;
     static Integer beeperDuration = 5000;
-    static Integer saveDataInterval = 300000;
+    static Integer saveDataInterval = 30000;
     static boolean stopCapture = false;
     static boolean isBeeperOn = false;
     static Thread mainThread;

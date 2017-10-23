@@ -23,8 +23,7 @@ public class MeasurementDAO {
             stmt.setInt(2, flatMeasurement.min);
             stmt.setInt(3, flatMeasurement.max);
             stmt.setInt(4, flatMeasurement.avg);
-
-            stmt.executeUpdate();
+            if(flatMeasurement.max != 0 && flatMeasurement.min != 0 && flatMeasurement.avg != 0) stmt.executeUpdate();
 
             //Logger.createLogger().info("DB query: min %d, max %d, avg %d", this.min, this.max, this.avg);
             stmt.close();

@@ -1,8 +1,11 @@
 import javax.sound.sampled.*;
+import javax.swing.text.StyledEditorKit;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 class SilenceGuard extends Thread {
@@ -19,18 +22,26 @@ class SilenceGuard extends Thread {
 
     public void run() {
         try {
-            this.byteArrayOutputStream = new ByteArrayOutputStream();
-            this.countdownTimer = 0;
+
 
             while (!App.stopCapture) {
-                Integer silenceAmount = this.measureSound();
-                Integer delta = previousMeasurement - silenceAmount;
-                if(Math.abs(delta) > 200) new Measurement(silenceAmount, new Date());
-                previousMeasurement = silenceAmount;
+                Process p = Runtime.getRuntime().exec("python3 sm.py");
+                BufferedReader stdInput = new BufferedReader(new
+                        InputStreamReader(p.getInputStream()));
 
-                if (silenceAmount <= App.thresholdValue) {
-                    String logMessage = String.format("Exceeded noise level. Silence amount: %d. Threshold: %d", silenceAmount, App.thresholdValue);
-                    Logger.createLogger().info(logMessage);
+                List<Integer> measurements = stdInput.lines()
+                                        .mapToDouble(m -> Double.parseDouble(m))
+                                        .boxed()
+                                        .mapToInt(m -> m.intValue())
+                                        .boxed()
+                                        .collect(Collectors.toList());
+
+                measurements.forEach(m -> new Measurement(m, new Date()));
+                Boolean isNoiseLevelExceeded = measurements.stream()
+                                                            .filter(m -> m >= App.thresholdValue)
+                                                            .findAny().isPresent();
+                if (isNoiseLevelExceeded) {
+                    Logger.createLogger().info("Noise level exceeded");
                     if(App.isBeeperOn) this.playSilencingSound("beep.wav");
                 }
 
@@ -38,34 +49,6 @@ class SilenceGuard extends Thread {
         } catch (Exception e) {
             Logger.createLogger().error(e.getMessage());
         }
-    }
-
-    public Integer measureSound() throws LineUnavailableException, InterruptedException {
-        AudioFormat audioFormat = new AudioFormat(8000.0F, 16, 1, true, false);
-        DataLine.Info dataLineInfo = new DataLine.Info(TargetDataLine.class, audioFormat);
-        targetDataLine = (TargetDataLine) AudioSystem.getLine(dataLineInfo);
-        targetDataLine.open(audioFormat);
-        targetDataLine.start();
-        cnt = targetDataLine.read(tempBuffer, 0, tempBuffer.length);
-        byteArrayOutputStream.write(tempBuffer, 0, cnt);
-        try {
-            countzero = 0;
-            for (int i = 0; i < tempBuffer.length; i++) {
-                convert[i] = tempBuffer[i];
-                if (convert[i] == 0) {
-                    countzero++;
-                }
-            }
-
-            countdownTimer++;
-
-        } catch (StringIndexOutOfBoundsException e) {
-            Logger.createLogger().error(e.getMessage());
-        }
-        Thread.sleep(0);
-        targetDataLine.close();
-
-        return countzero;
     }
 
 
